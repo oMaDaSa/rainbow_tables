@@ -1,4 +1,4 @@
-"""Base comum da dupla. Leia as etapas 2 e 3 de guia.html antes de preencher."""
+"""Leitura da lista Diceware, hash da aula e redução por coluna."""
 
 import hashlib
 from pathlib import Path
@@ -8,31 +8,43 @@ LISTA = RAIZ / "dados" / "diceware.wordlist.asc"
 
 
 def carregar_palavras(caminho: Path = LISTA) -> list[str]:
-    """TODO B1: devolver as palavras em ordem crescente do código Diceware.
+    """Devolver as palavras em ordem crescente do código Diceware."""
 
-    Aceitar só linhas com código de cinco dígitos de 1 a 6 e uma palavra.
-    Ignorar o cabeçalho e a assinatura PGP. Não remover pontuação das palavras.
-    Exigir 7.776 códigos distintos e 7.776 palavras distintas; caso contrário,
-    levantar ValueError. A primeira palavra deve ser 'a', a última, '@'.
-    Caminho inexistente deve manter o FileNotFoundError do Python.
-    """
-    raise NotImplementedError("B1: implemente carregar_palavras; veja a etapa 2")
+    codigo_para_palavra = {}
+    for linha in caminho.read_text(encoding="utf-8").splitlines():
+        campos = linha.split()
+        if len(campos) != 2:
+            continue
+        codigo, palavra = campos
+        if len(codigo) != 5 or any(digito not in "123456" for digito in codigo):
+            continue
+        if codigo in codigo_para_palavra:
+            raise ValueError(f"Código Diceware duplicado: {codigo}")
+        codigo_para_palavra[codigo] = palavra
+
+    palavras = [codigo_para_palavra[codigo] for codigo in sorted(codigo_para_palavra)]
+    
+    if len(set(palavras)) != 7776:
+        raise ValueError("A lista deve conter 7.776 códigos e palavras distintos")
+    if palavras[0] != "a" or palavras[-1] != "@":
+        raise ValueError("A lista deve começar em 'a' e terminar em '@'")
+
+    return palavras
 
 
 def calcular_hash(senha: str) -> str:
-    """Hash fornecido no slide 47. Retorna 64 caracteres hexadecimais."""
     return hashlib.sha256(b"GBC083" + senha.encode("utf-8")).hexdigest()
 
 
 def reduzir(h: str, coluna: int, palavras: list[str], modo: str = "cores") -> str:
-    """TODO B2: transformar um hash em uma palavra da lista.
+    """Transformar um hash em uma palavra da lista."""
 
-    Convenção do guia: cores usa a coluna; fixa usa sempre a cor zero.
-    Mistura: SHA-256 dos bytes UTF-8 do texto f'{cor}:{h}'.
-    Índice: inteiro hexadecimal da mistura, módulo len(palavras).
-    Essa segunda aplicação de SHA-256 faz parte da redução, não altera H.
-    Exigir coluna >= 0, lista não vazia e modo em {'cores', 'fixa'};
-    para esses argumentos inválidos, levantar ValueError.
-    Os chamadores fornecem h hexadecimal válido, em minúsculas.
-    """
-    raise NotImplementedError("B2: implemente reduzir; veja a etapa 3")
+    if coluna < 0 or not palavras or modo not in {"cores", "fixa"}:
+        raise ValueError("Exigidos coluna >= 0, lista não vazia e modo cores ou fixa")
+
+    cor = coluna if modo == "cores" else 0
+
+    mistura = hashlib.sha256(f"{cor}:{h}".encode("utf-8")).hexdigest()
+    posicao = int(mistura, 16) % len(palavras)
+
+    return palavras[posicao]
