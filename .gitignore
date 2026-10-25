@@ -4,3 +4,8 @@ __pycache__/
 resultados/
 .verificacao/
 apresentacao/resultados.csv
+
+# Geracao local da apresentacao
+/ferramentas/gerar_pdf_unico.py
+/ferramentas/requirements-apresentacao.txt
+/relatorio/apresentacao.html

@@ -45,8 +45,8 @@ Os resultados são gravados em uma pasta nova de `resultados/`. O argumento `--r
 | --- | --- |
 | `apresentacao/` | PDF final e os dois códigos apresentados |
 | `dados/` | Lista Diceware original e sua procedência |
-| `relatorio/` | CSV da rodada oficial, metadados e fonte HTML da apresentação |
-| `ferramentas/` | Execução documentada do experimento e geração do PDF |
+| `relatorio/` | CSV da rodada oficial e metadados |
+| `ferramentas/` | Execução documentada do experimento |
 | `tests/` | Testes automatizados da implementação |
 | `referencias/` | Material do professor com enunciado e hash de referência |
 
@@ -60,20 +60,6 @@ Os resultados são gravados em uma pasta nova de `resultados/`. O argumento `--r
 - Eficácia: proporção de alvos recuperados. Eficiência: tempos de construção, índice e busca; tamanho dos pares serializados em JSON.
 
 As tabelas do PDF são médias das três sementes. O CSV preserva cada cenário separadamente, e os metadados identificam o código e a lista usados. A taxa amostral não é a cobertura exata do dicionário, e o tamanho do JSON não é consumo de RAM.
-
-## Gerar a apresentação
-
-As dependências abaixo servem apenas para gerar o documento:
-
-```bash
-python -m pip install -r ferramentas/requirements-apresentacao.txt
-python -m playwright install chromium
-python ferramentas/gerar_pdf_unico.py
-```
-
-No Windows, o gerador utiliza o Edge quando instalado. Nos demais ambientes, utiliza o Chromium instalado pelo Playwright. O HTML fica em `relatorio/apresentacao.html` e o PDF em `apresentacao/`.
-
-O gerador usa os resultados de `relatorio/`, executa as verificações funcionais, confere que o código completo aparece no documento e incorpora os anexos. Se o código mudar, atualize a rodada e regenere o PDF para manter os arquivos consistentes.
 
 ## Referências
 
