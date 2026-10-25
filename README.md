@@ -78,4 +78,4 @@ O gerador usa os resultados de `relatorio/`, executa as verificações funcionai
 ## Referências
 
 - Ivan Sendin. [Rainbow Tables](referencias/aulaRT.pdf), material de GBC083/UFU. Slides 46 e 47 apresentam a proposta e o hash.
-- Arnold G. Reinhold. [Diceware Word List](https://theworld.com/~reinhold/diceware.wordlist.asc). A procedência e o SHA-256 da cópia usada estão em [dados/README.md](dados/README.md).
+- Arnold G. Reinhold. [Diceware Word List](https://theworld.com/~reinhold/diceware.wordlist.asc). O SHA-256 da cópia usada está em [relatorio/metadados.json](relatorio/metadados.json), no campo `lista_sha256`.
