@@ -1,12 +1,12 @@
-"""Casos pequenos: primeiro testar cada trilha; depois a integração real."""
+"""Testes de construção, busca e integração com a lista Diceware."""
 
 import random
 import unittest
 from unittest.mock import patch
 
-from base import calcular_hash, carregar_palavras, reduzir
-from busca import buscar, indexar
-from construcao import construir, fim_da_cadeia
+from apresentacao.rainbow_tables import calcular_hash, carregar_palavras, reduzir
+from apresentacao.rainbow_tables import buscar, indexar
+from apresentacao.rainbow_tables import construir, fim_da_cadeia
 
 
 def hash_brinquedo(p):
@@ -19,12 +19,12 @@ def reducao_brinquedo(h, coluna, palavras, modo="cores"):
 
 class TestConstrucao(unittest.TestCase):
     def test_tres_passos(self):
-        with patch("construcao.calcular_hash", side_effect=hash_brinquedo), \
-             patch("construcao.reduzir", side_effect=reducao_brinquedo):
+        with patch("apresentacao.rainbow_tables.calcular_hash", side_effect=hash_brinquedo), \
+             patch("apresentacao.rainbow_tables.reduzir", side_effect=reducao_brinquedo):
             self.assertEqual(fim_da_cadeia("A", list("ABCDX"), 3), "D")
 
     def test_preserva_finais_repetidos(self):
-        with patch("construcao.fim_da_cadeia", return_value="fim"):
+        with patch("apresentacao.rainbow_tables.fim_da_cadeia", return_value="fim"):
             pares = construir(list("ABCD"), 4, 2, 17)
         self.assertEqual(len(pares), 4)
         self.assertEqual([p[0] for p in pares], random.Random(17).sample(list("ABCD"), 4))
@@ -44,14 +44,14 @@ class TestBusca(unittest.TestCase):
                          {"Z": ["A", "B"], "Y": ["C"]})
 
     def test_todas_posicoes(self):
-        with patch("busca.calcular_hash", side_effect=hash_brinquedo), \
-             patch("busca.reduzir", side_effect=reducao_brinquedo):
+        with patch("apresentacao.rainbow_tables.calcular_hash", side_effect=hash_brinquedo), \
+             patch("apresentacao.rainbow_tables.reduzir", side_effect=reducao_brinquedo):
             for p in "ABC":
                 self.assertEqual(buscar(hash_brinquedo(p), list("ABCDX"), {"D": ["A"]}, 3), p)
 
     def test_falso_candidato_e_inicio_seguinte(self):
-        with patch("busca.calcular_hash", side_effect=hash_brinquedo), \
-             patch("busca.reduzir", side_effect=reducao_brinquedo):
+        with patch("apresentacao.rainbow_tables.calcular_hash", side_effect=hash_brinquedo), \
+             patch("apresentacao.rainbow_tables.reduzir", side_effect=reducao_brinquedo):
             # Final candidato não é prova. X vem antes de A de propósito.
             self.assertEqual(buscar("02", list("ABCDX"), {"D": ["X", "A"]}, 3), "B")
             self.assertIsNone(buscar("02", list("ABCDX"), {"D": ["X"]}, 3))

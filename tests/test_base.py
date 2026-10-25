@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from base import LISTA, calcular_hash, carregar_palavras, reduzir
+from apresentacao.rainbow_tables import LISTA, calcular_hash, carregar_palavras, reduzir
 
 
 class TestHash(unittest.TestCase):

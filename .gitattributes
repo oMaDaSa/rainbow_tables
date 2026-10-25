@@ -1,0 +1,10 @@
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.html text eol=lf
+*.txt text eol=lf
+*.csv -text whitespace=cr-at-eol
+*.asc -text
+*.pdf -text
+.gitattributes text eol=lf
+.gitignore text eol=lf

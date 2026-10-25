@@ -1,78 +1,81 @@
-# Rainbow Tables — guia do trabalho em dupla
+# Rainbow Tables
 
-Abra [guia.html](guia.html) no navegador. Ele explica o trabalho a partir do [PDF da aula](aulaRT.pdf), acompanha a implementação em Python e mostra como dividir o código entre vocês.
+Trabalho de Segurança da Informação (GBC083), Universidade Federal de Uberlândia.
 
-As funções da base conjunta (B1/B2 em `base.py`) e da parte A (A1/A2 em `construcao.py`) estão implementadas. A **parte B continua reservada à outra pessoa**: `busca.py` mantém o esqueleto original, com C1/C2 por preencher. Os rótulos B1/B2 pertencem à base comum, não à parte B de busca.
+**Autores:** Matheus Dantas Santana e Vanessa Dias Ferreira.
+**Professor:** Ivan Sendin.
 
-## Estado atual — 18/10/2026
+A implementação compara formatos de Rainbow Tables com senhas de uma entrada Diceware, usando reduções por coluna e uma redução fixa para comparação.
 
-- Conjunto: leitura validada das 7.776 entradas Diceware, hash do professor e redução nos modos cores/fixa.
-- Parte A: cadeia com exatamente t passos H→R e construção de m pares início/fim, com inícios distintos, semente reproduzível e finais repetidos preservados.
-- Parte B: índice e busca pendentes com a outra pessoa. O arquivo `busca.py` está igual à versão inicial do repositório.
-- Verificação deste escopo: **13 testes**, sendo dez da base e três da construção. Os testes de busca e integração dependem da parte B; os experimentos e o relatório ficam para depois de integrar as duas partes.
+## Apresentação e códigos
 
-Para conferir apenas o que está implementado:
+A pasta [apresentacao/](https://github.com/oMaDaSa/rainbow_tables/tree/main/apresentacao) contém:
 
-```powershell
-python -m unittest tests.test_base tests.test_dupla.TestConstrucao -v
-```
+- [Apresentação em PDF](apresentacao/Rainbow_Tables_Matheus_Vanessa.pdf): implementação explicada, testes, gráficos, análises e código completo.
+- [rainbow_tables.py](apresentacao/rainbow_tables.py): implementação e experimento completo.
+- [testar_busca.py](apresentacao/testar_busca.py): verificações funcionais apresentadas no PDF.
 
-O código segue os laços, listas e dicionários apresentados no guia, sem dependências externas. As alterações permanecem locais, sem commit ou publicação remota.
+A entrega ao professor é **um único PDF**. Ele também inclui os códigos, a lista e o CSV como anexos internos.
 
-## Começar
+## Executar
 
-Abra esta pasta, `rainbow_tables`, no VS Code. No terminal dela, com Python 3.10+:
+Python 3.10 ou superior. Os algoritmos e os testes usam somente a biblioteca padrão.
 
-```powershell
-python -m unittest tests.test_base.TestHash -v
-```
+Na raiz do repositório:
 
-Os dois testes iniciais devem passar. Nenhum pacote externo precisa ser instalado. A lista Diceware original já está em `dados/`, com procedência documentada. O guia e o código funcionam offline após instalar as ferramentas.
-
-## Divisão e sequência
-
-1. Juntos: etapas 0–4; leitura e redução na base comum concluídas.
-2. Pessoa A: etapa 5, construção concluída; `python -m unittest tests.test_dupla.TestConstrucao -v`.
-3. Pessoa B: etapa 6, índice e busca a implementar pela outra pessoa; `python -m unittest tests.test_dupla.TestBusca -v`.
-4. Juntos: juntar as partes, rodar os testes e fazer os experimentos. Aproveitem para acompanhar o código do colega.
-
-Depois que a parte B estiver pronta:
-
-```powershell
-python -m unittest tests.test_base -v
-python -m unittest tests.test_dupla.TestIntegracao -v
+```bash
+python apresentacao/testar_busca.py
 python -m unittest discover -v
-python experimentar.py --rapido
-python experimentar.py
+python apresentacao/rainbow_tables.py
 ```
 
-Antes de implementar os TODOs, testes dessas funções mostram `NotImplementedError`; não são pulados nem considerados aprovados. Ao completar a implementação, os **20 testes** devem passar. O modo rápido é uma conferência de integração; a rodada completa produz 24 cenários e 4.800 consultas. Cada execução grava uma pasta nova em `resultados/`.
+O último comando executa 24 cenários e 4.800 consultas, e gera `apresentacao/resultados.csv`. A lista é localizada automaticamente em `dados/`. Esse arquivo novo não substitui a rodada do relatório, preservada em `relatorio/resultados.csv`.
 
-## Convenções e limites
+Para executar uma nova rodada com metadados:
 
-- Senha principal: uma das 7.776 entradas, sem código dos dados nem quebra de linha.
-- H: SHA-256 de `b"GBC083" + senha.encode("utf-8")`, hexadecimal.
-- R: mistura SHA-256 de `f"{cor}:{h}"`, inteiro hexadecimal módulo N; cor é a coluna ou zero no modo fixo.
-- Largura t: t passos H→R; linha guarda palavras p₀ e pₜ. O hash de pₜ não faz parte dessa linha.
-- Finais repetidos preservam todos os inícios. Busca só retorna senha após confirmar o hash.
-- Experimentos: formatos 512×16, 256×32, 128×64, 64×128; sementes 17, 43 e 91; 200 alvos independentes, semente 2026; modos cores e fixa.
-- Armazenamento medido: bytes do JSON de pares, não RAM. Metadados incluem campos de CPU/RAM/condições para preencher.
-- Duas palavras são uma extensão orientada, não implementada no esqueleto nem no medidor.
-
-## Compartilhar e continuar
-
-A etapa 9 explica criar um repositório **nesta pasta**, convidar o colega, trabalhar em branches e revisar PRs. Nenhum repositório remoto foi criado. `resultados/` é ignorado; copiem uma rodada completa e seus metadados preenchidos para `relatorio/` quando quiserem versionar as evidências selecionadas.
-
-O progresso marcado no HTML é individual, local ao navegador e não é sincronizado com o colega. Para registrar continuidade compartilhada, usem commits e uma nota objetiva no PR ou neste README, indicando TODOs concluídos e testes executados.
-
-## Verificar o material fornecido
-
-```powershell
-python ferramentas/verificar_material.py
+```bash
+python ferramentas/executar_experimento.py
 ```
 
-Esse comando usa somente a biblioteca padrão e confere estrutura, links locais, integridade da lista, sintaxe Python, nomes dos TODOs, quantidade de testes e vetores numéricos do guia. Ele não certifica a implementação dos alunos; para isso, executem os testes progressivos.
+Os resultados são gravados em uma pasta nova de `resultados/`. O argumento `--rapido` executa apenas uma conferência curta de integração, que não deve ser usada no relatório. Para atualizar explicitamente a rodada oficial, use `--saida relatorio`.
 
-Nas revisões do guia, manter a explicação em português natural, como alguém acompanhando os colegas no trabalho. Evitar slogans, frases de efeito, avisos repetidos e tom de cobrança. Explicar os termos novos no contexto em que aparecem, sem infantilizar a leitura.
+## Organização
 
-Na preparação do roteiro, uma referência temporária passou nos 20 testes e executou o modo rápido e os 24 cenários completos (4.800 consultas), conferindo contagens e arquivos gerados. Essa implementação não faz parte da entrega; os resultados de referência não são resultados da dupla. A página foi conferida no Edge em desktop (1.440 px) e celular (390 px), incluindo interação da cadeia, cópia, formatos e persistência das marcações. O PDF da aula foi preservado.
+| Pasta | Conteúdo |
+| --- | --- |
+| `apresentacao/` | PDF final e os dois códigos apresentados |
+| `dados/` | Lista Diceware original e sua procedência |
+| `relatorio/` | CSV da rodada oficial, metadados e fonte HTML da apresentação |
+| `ferramentas/` | Execução documentada do experimento e geração do PDF |
+| `tests/` | Testes automatizados da implementação |
+| `referencias/` | Material do professor com enunciado e hash de referência |
+
+## Experimento
+
+- Domínio: 7.776 entradas Diceware; uma entrada por senha. Duas palavras não foram avaliadas.
+- Formatos: 512×16, 256×32, 128×64 e 64×128; todos com 8.192 passos de construção.
+- Modos: cores por coluna e redução fixa.
+- Sementes das tabelas: 17, 43 e 91. Os mesmos 200 alvos são sorteados com semente 2026, independentemente da construção.
+- Ambiente da rodada publicada: Ryzen 7 5700X, 16 GiB de RAM, Windows 11, Python 3.14.7.
+- Eficácia: proporção de alvos recuperados. Eficiência: tempos de construção, índice e busca; tamanho dos pares serializados em JSON.
+
+As tabelas do PDF são médias das três sementes. O CSV preserva cada cenário separadamente, e os metadados identificam o código e a lista usados. A taxa amostral não é a cobertura exata do dicionário, e o tamanho do JSON não é consumo de RAM.
+
+## Gerar a apresentação
+
+As dependências abaixo servem apenas para gerar o documento:
+
+```bash
+python -m pip install -r ferramentas/requirements-apresentacao.txt
+python -m playwright install chromium
+python ferramentas/gerar_pdf_unico.py
+```
+
+No Windows, o gerador utiliza o Edge quando instalado. Nos demais ambientes, utiliza o Chromium instalado pelo Playwright. O HTML fica em `relatorio/apresentacao.html` e o PDF em `apresentacao/`.
+
+O gerador usa os resultados de `relatorio/`, executa as verificações funcionais, confere que o código completo aparece no documento e incorpora os anexos. Se o código mudar, atualize a rodada e regenere o PDF para manter os arquivos consistentes.
+
+## Referências
+
+- Ivan Sendin. [Rainbow Tables](referencias/aulaRT.pdf), material de GBC083/UFU. Slides 46 e 47 apresentam a proposta e o hash.
+- Arnold G. Reinhold. [Diceware Word List](https://theworld.com/~reinhold/diceware.wordlist.asc). A procedência e o SHA-256 da cópia usada estão em [dados/README.md](dados/README.md).
